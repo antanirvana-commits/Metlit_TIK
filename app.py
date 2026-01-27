@@ -122,7 +122,7 @@ KATEGORI_TOPIK = {
     "O. Lainnya (tulis sendiri)": []
 }
 
-RENCANA_OUTPUT = ["Non-produk", "Produk", "Produk + uji efektivitas"]
+RENCANA_OUTPUT = ["Non-produk", "Produk", "Produk dan uji efektivitas"]
 JENIS_PRODUK = [
     "Media pembelajaran interaktif",
     "E-modul / bahan ajar digital",
@@ -143,7 +143,6 @@ SUBJEK = ["Siswa SMP", "Siswa SMA", "Siswa SMK", "Mahasiswa", "Guru TIK/Informat
 METODE = [
     "R&D / Penelitian Pengembangan",
     "Eksperimen / Quasi Eksperimen",
-    "PTK (Penelitian Tindakan Kelas)",
     "Survei (kuesioner/angket)",
     "Deskriptif Kuantitatif",
     "Deskriptif Kualitatif",
