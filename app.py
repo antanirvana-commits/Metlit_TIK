@@ -172,19 +172,8 @@ def is_empty(x: str) -> bool:
 # =========================
 # UI
 # =========================
-st.set_page_config(page_title="Rencana Penelitian TIK", page_icon="📌", layout="centered")
-st.title("📌 Form Rencana Penelitian (Menuju Proposal)")
-st.caption("Pilih kategori → topik muncul otomatis. Data tersimpan ke Google Sheet via Apps Script.")
-
-# Panel konfigurasi untuk lokal (kalau secrets belum dibuat)
-with st.expander("⚙️ Konfigurasi (opsional untuk lokal)", expanded=False):
-    st.write("Kalau secrets.toml belum ada, isi manual di sini.")
-    url_input = st.text_input("APPS_SCRIPT_URL", value=APPS_SCRIPT_URL, placeholder="https://script.google.com/macros/s/.../exec")
-    key_input = st.text_input("SECRET_KEY", value=SECRET_KEY, type="password", placeholder="rp-2026")
-    if url_input.strip():
-        APPS_SCRIPT_URL = url_input.strip()
-    if key_input.strip():
-        SECRET_KEY = key_input.strip()
+st.set_page_config(page_title="Rencana Penelitian TIK", page_icon="", layout="centered")
+st.title("Form Rencana Penelitian (Menuju Proposal)")
 
 # =========================
 # KATEGORI & TOPIK DI LUAR FORM (agar langsung muncul)
@@ -238,7 +227,7 @@ with st.form("rencana_penelitian_9"):
     st.subheader("Judul Sementara")
     judul = st.text_input("9) Judul sementara penelitian *")
 
-    submitted = st.form_submit_button("✅ Kirim")
+    submitted = st.form_submit_button("Kirim")
 
 # =========================
 # SUBMIT HANDLER
@@ -282,8 +271,8 @@ if submitted:
         try:
             res = send_to_sheet(payload, APPS_SCRIPT_URL, SECRET_KEY)
             if res.get("ok") is True:
-                st.success("✅ Tersimpan ke Google Sheet. Terima kasih!")
+                st.success("Tersimpan ke Google Sheet. Terima kasih!")
             else:
-                st.error(f"❌ Gagal menyimpan: {res}")
+                st.error(f"Gagal menyimpan: {res}")
         except Exception as e:
-            st.error(f"❌ Error saat mengirim ke Apps Script: {e}")
+            st.error(f"Error saat mengirim ke Apps Script: {e}")
