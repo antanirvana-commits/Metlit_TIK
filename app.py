@@ -213,7 +213,7 @@ with st.form("rencana_penelitian_9"):
     output = st.radio("6) Rencana output penelitian *", RENCANA_OUTPUT, horizontal=True)
 
     jenis_produk = []
-    if output in ["Produk", "Produk + uji efektivitas"]:
+    if output in ["Produk", "Produk dan uji efektivitas"]:
         jenis_produk = st.multiselect("Jika produk, pilih jenis produk (maks 2) *", JENIS_PRODUK, max_selections=2)
 
     st.subheader("Tempat & Subjek Penelitian (menyesuaikan KKN/PLP)")
