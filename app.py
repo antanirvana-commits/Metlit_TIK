@@ -2,15 +2,10 @@ import streamlit as st
 import requests
 
 # =========================
-# CONFIG: Secrets
+# CONFIG (tanpa secrets.toml)
 # =========================
-def get_config():
-    # key harus nama variabel di secrets.toml
-    url = st.secrets.get("APPS_SCRIPT_URL", "").strip()
-    key = st.secrets.get("SECRET_KEY", "").strip()
-    return url, key
-
-APPS_SCRIPT_URL, SECRET_KEY = get_config()
+APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzzx1oBq47slEDYc32Iw4hAAccDpit55E7GHh0SNQwonLZuNVlz31PZyNr3B09xt9eU/exec"
+SECRET_KEY = "rp-2026"
 
 # =========================
 # DATA PILIHAN
@@ -158,6 +153,9 @@ METODE = [
 # =========================
 # Helper
 # =========================
+def is_empty(x) -> bool:
+    return x is None or str(x).strip() == ""
+
 def send_to_sheet(payload: dict, url: str, secret: str):
     payload = dict(payload)
     payload["secret"] = secret
@@ -165,18 +163,12 @@ def send_to_sheet(payload: dict, url: str, secret: str):
     r.raise_for_status()
     return r.json()
 
-def is_empty(x: str) -> bool:
-    return x is None or str(x).strip() == ""
-
 # =========================
 # UI
 # =========================
 st.set_page_config(page_title="Rencana Penelitian TIK", page_icon="", layout="centered")
 st.title("Form Rencana Penelitian (Menuju Proposal)")
 
-# =========================
-# KATEGORI & TOPIK DI LUAR FORM (agar langsung muncul)
-# =========================
 st.subheader("Minat Topik Penelitian")
 
 kategori = st.selectbox(
@@ -199,9 +191,6 @@ elif kategori == "O. Lainnya (tulis sendiri)":
 else:
     topik = ""
 
-# =========================
-# FORM SUBMIT (input lain)
-# =========================
 with st.form("rencana_penelitian_9"):
     st.subheader("Identitas")
     nama = st.text_input("1) Nama lengkap *")
@@ -213,7 +202,11 @@ with st.form("rencana_penelitian_9"):
 
     jenis_produk = []
     if output in ["Produk", "Produk dan uji efektivitas"]:
-        jenis_produk = st.multiselect("Jika produk, pilih jenis produk (maks 2) *", JENIS_PRODUK, max_selections=2)
+        jenis_produk = st.multiselect(
+            "Jika produk, pilih jenis produk (maks 2) *",
+            JENIS_PRODUK,
+            max_selections=2
+        )
 
     st.subheader("Tempat & Subjek Penelitian (menyesuaikan KKN/PLP)")
     konteks = st.selectbox("7a) Konteks kegiatan (KKN/PLP) *", [""] + KONTEKS)
@@ -228,21 +221,25 @@ with st.form("rencana_penelitian_9"):
 
     submitted = st.form_submit_button("Kirim")
 
-# =========================
-# SUBMIT HANDLER
-# =========================
 if submitted:
     errors = []
-    if is_empty(APPS_SCRIPT_URL): errors.append("APPS_SCRIPT_URL belum diisi (secrets.toml atau konfigurasi).")
-    if is_empty(SECRET_KEY): errors.append("SECRET_KEY belum diisi (secrets.toml atau konfigurasi).")
 
+    # Validasi config
+    if is_empty(APPS_SCRIPT_URL):
+        errors.append("APPS_SCRIPT_URL belum diisi (konfigurasi aplikasi).")
+    if is_empty(SECRET_KEY):
+        errors.append("SECRET_KEY belum diisi (konfigurasi aplikasi).")
+
+    # Validasi input user
     if is_empty(nama): errors.append("Nama lengkap wajib diisi.")
     if is_empty(nim): errors.append("NIM wajib diisi.")
     if is_empty(kelas): errors.append("Kelas wajib diisi.")
     if is_empty(kategori): errors.append("Kategori minat wajib dipilih.")
     if is_empty(topik): errors.append("Topik minat wajib dipilih/diisi.")
-    if output in ["Produk", "Produk + uji efektivitas"] and len(jenis_produk) == 0:
+
+    if output in ["Produk", "Produk dan uji efektivitas"] and len(jenis_produk) == 0:
         errors.append("Karena memilih output produk, pilih minimal 1 jenis produk.")
+
     if is_empty(konteks): errors.append("Konteks (KKN/PLP) wajib dipilih.")
     if is_empty(tempat): errors.append("Tempat penelitian wajib dipilih.")
     if is_empty(subjek): errors.append("Subjek penelitian wajib dipilih.")
